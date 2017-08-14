@@ -1,6 +1,7 @@
 import tweepy
+import time
 import os
-
+from encryption import *
 
 class EverywordBot(object):
 
@@ -8,7 +9,7 @@ class EverywordBot(object):
                  access_token, token_secret,
                  source_file_name, index_file_name,
                  lat=None, long=None, place_id=None,
-                 prefix=None, suffix=None, bbox=None):
+                 prefix=None, suffix=None, bbox=None, data=None):
         self.source_file_name = source_file_name
         self.index_file_name = index_file_name
         self.lat = lat
@@ -17,6 +18,7 @@ class EverywordBot(object):
         self.prefix = prefix
         self.suffix = suffix
         self.bbox = bbox
+	self.data = data
 
         auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
         auth.set_access_token(access_token, token_secret)
@@ -53,6 +55,14 @@ class EverywordBot(object):
     def post(self):
         index = self._get_current_index()
         status_str = self._get_current_line(index)
+	encrypted = Encrypt(status_str)
+	with open(self.data, "a") as data_file:
+		data_file.write("Word: " + status_str + "\n")
+		data_file.write("Function: " + encrypted[0] + "\n")
+		data_file.write("Encrypted: " + encrypted[1] + "\n")
+		data_file.write("Key: " + str(encrypted[2]) + "\n")
+		data_file.write("----------------------------------------\n")
+	status_str = encrypted[1]
         if self.prefix:
             status_str = self.prefix + status_str
         if self.suffix:
@@ -64,7 +74,8 @@ class EverywordBot(object):
                                    lat=self.lat, long=self.long,
                                    place_id=self.place_id)
         self._increment_index(index)
-
+	print status_str
+	time.sleep(600)
 
 def _csv_to_float_list(csv):
     return list(map(float, csv.split(',')))
@@ -109,12 +120,16 @@ if __name__ == '__main__':
     parser.add_option('--suffix', dest='suffix',
                       help="string to add to the end of each post "
                            "(if you want a space, include a space)")
+    parser.add_option('--data', dest='data',
+		      help= "File to save information about the status")
+
     (options, args) = parser.parse_args()
 
     bot = EverywordBot(options.consumer_key, options.consumer_secret,
                        options.access_token, options.token_secret,
                        options.source_file, options.index_file,
                        options.lat, options.long, options.place_id,
-                       options.prefix, options.suffix, options.bbox)
+                       options.prefix, options.suffix, options.bbox, options.data)
 
-    bot.post()
+    while True:
+        bot.post()
