@@ -73,14 +73,14 @@ def Cipher_AES(string):
 	iv = Random.new().read(AES.block_size)
 	cipher = AES.new(key, AES.MODE_CFB, iv)
 	msg = iv + cipher.encrypt(string)
-	return [msg, key]
+	return [bin(int(binascii.hexlify(msg), 16)), key]
 
 def Cipher_ARC2(string):
 	key = random_string(16)
 	iv = Random.new().read(ARC2.block_size)
 	cipher = ARC2.new(key, ARC2.MODE_CFB, iv)
 	msg = iv + cipher.encrypt(string)
-	return [msg, key]
+	return [bin(int(binascii.hexlify(msg), 16)), key]
 
 def Cipher_ARC4(string):
 	key = random_string(32)
@@ -88,7 +88,7 @@ def Cipher_ARC4(string):
 	tempkey = SHA.new(key+nonce).digest()
 	cipher = ARC4.new(tempkey)
 	msg = nonce + cipher.encrypt(string)
-	return [msg, key]
+	return [bin(int(binascii.hexlify(msg), 16)), key]
 
 def Cipher_Caesar(plaintext):
 	shift = randint(1,26)
@@ -97,8 +97,18 @@ def Cipher_Caesar(plaintext):
 	table = string.maketrans(alphabet, shifted_alphabet)
 	return [plaintext.translate(table), shift]
 
+def Cipher_Vigenere(string):
+	encoded_chars = []
+	key = random_string(5)
+    	for i in xrange(len(string)):
+        	key_c = key[i % len(key)]
+        	encoded_c = chr(ord(string[i]) + ord(key_c) % 256)
+        	encoded_chars.append(encoded_c)
+    	encoded_string = "".join(encoded_chars)
+    	return [base64.urlsafe_b64encode(encoded_string), key]
+
 def Encrypt(string):
-	functions_list = [Encoding_Base64, Encoding_Binary, Cipher_AES, Cipher_ARC2, Cipher_ARC4, Hash_HMAC, Hash_MD2, Hash_MD4, Hash_MD5, Hash_RIPEMD, Hash_SHA, Hash_SHA224, Hash_SHA256, Hash_SHA384, Hash_SHA512, Cipher_Caesar]
+	functions_list = [Encoding_Base64, Encoding_Binary, Cipher_AES, Cipher_ARC2, Cipher_ARC4, Cipher_Vigenere, Hash_HMAC, Hash_MD2, Hash_MD4, Hash_MD5, Hash_RIPEMD, Hash_SHA, Hash_SHA224, Hash_SHA256, Hash_SHA384, Hash_SHA512, Cipher_Caesar]
 	function_to_call = random.choice(functions_list)
 	results = function_to_call(string)
 	result = results[0]
