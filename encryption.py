@@ -68,19 +68,19 @@ def Hash_SHA512(string):
 	h.update(string)
 	return [h.hexdigest(), ""]
 
-#def Cipher_AES(string):
-#	key = random_string(16)
-#	iv = Random.new().read(AES.block_size)
-#	cipher = AES.new(key, AES.MODE_CFB, iv)
-#	msg = iv + cipher.encrypt(string)
-#	return msg
+def Cipher_AES(string):
+	key = random_string(16)
+	iv = Random.new().read(AES.block_size)
+	cipher = AES.new(key, AES.MODE_CFB, iv)
+	msg = iv + cipher.encrypt(string)
+	return [msg, key]
 
-#def Cipher_ARC2(string):
-#	 key = random_string(16)
-#	iv = Random.new().read(ARC2.block_size)
-#	cipher = ARC2.new(key, ARC2.MODE_CFB, iv)
-#	msg = iv + cipher.encrypt(string)
-#	return msg
+def Cipher_ARC2(string):
+	key = random_string(16)
+	iv = Random.new().read(ARC2.block_size)
+	cipher = ARC2.new(key, ARC2.MODE_CFB, iv)
+	msg = iv + cipher.encrypt(string)
+	return [msg, key]
 
 def Cipher_ARC4(string):
 	key = random_string(32)
@@ -98,7 +98,7 @@ def Cipher_Caesar(plaintext):
 	return [plaintext.translate(table), shift]
 
 def Encrypt(string):
-	functions_list = [Encoding_Base64, Encoding_Binary, Hash_HMAC, Hash_MD2, Hash_MD4, Hash_MD5, Hash_RIPEMD, Hash_SHA, Hash_SHA224, Hash_SHA256, Hash_SHA384, Hash_SHA512, Cipher_Caesar]
+	functions_list = [Encoding_Base64, Encoding_Binary, Cipher_AES, Cipher_ARC2, Cipher_ARC4, Hash_HMAC, Hash_MD2, Hash_MD4, Hash_MD5, Hash_RIPEMD, Hash_SHA, Hash_SHA224, Hash_SHA256, Hash_SHA384, Hash_SHA512, Cipher_Caesar]
 	function_to_call = random.choice(functions_list)
 	results = function_to_call(string)
 	result = results[0]
