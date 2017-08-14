@@ -107,8 +107,13 @@ def Cipher_Vigenere(string):
     	encoded_string = "".join(encoded_chars)
     	return [base64.urlsafe_b64encode(encoded_string), key]
 
+def Cipher_XOR(string):
+	key = random_string(len(string))
+	cipher = XOR.new(key)
+	return [base64.b64encode(cipher.encrypt(string)), key]
+
 def Encrypt(string):
-	functions_list = [Encoding_Base64, Encoding_Binary, Cipher_AES, Cipher_ARC2, Cipher_ARC4, Cipher_Vigenere, Hash_HMAC, Hash_MD2, Hash_MD4, Hash_MD5, Hash_RIPEMD, Hash_SHA, Hash_SHA224, Hash_SHA256, Hash_SHA384, Hash_SHA512, Cipher_Caesar]
+	functions_list = [Encoding_Base64, Encoding_Binary, Cipher_AES, Cipher_ARC2, Cipher_ARC4, Cipher_Vigenere, Cipher_XOR, Hash_HMAC, Hash_MD2, Hash_MD4, Hash_MD5, Hash_RIPEMD, Hash_SHA, Hash_SHA224, Hash_SHA256, Hash_SHA384, Hash_SHA512, Cipher_Caesar]
 	function_to_call = random.choice(functions_list)
 	results = function_to_call(string)
 	result = results[0]
