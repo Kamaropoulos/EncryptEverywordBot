@@ -73,14 +73,14 @@ def Cipher_AES(string):
 	iv = Random.new().read(AES.block_size)
 	cipher = AES.new(key, AES.MODE_CFB, iv)
 	msg = iv + cipher.encrypt(string)
-	return [bin(int(binascii.hexlify(msg), 16)), key]
+	return [Encoding_Base64(msg)[0], key]
 
 def Cipher_ARC2(string):
 	key = random_string(16)
 	iv = Random.new().read(ARC2.block_size)
 	cipher = ARC2.new(key, ARC2.MODE_CFB, iv)
 	msg = iv + cipher.encrypt(string)
-	return [bin(int(binascii.hexlify(msg), 16)), key]
+	return [Encoding_Base64(msg)[0], key]
 
 def Cipher_ARC4(string):
 	key = random_string(32)
@@ -88,7 +88,7 @@ def Cipher_ARC4(string):
 	tempkey = SHA.new(key+nonce).digest()
 	cipher = ARC4.new(tempkey)
 	msg = nonce + cipher.encrypt(string)
-	return [bin(int(binascii.hexlify(msg), 16)), key]
+	return [Encoding_Base64(msg)[0], key]
 
 def Cipher_Caesar(plaintext):
 	shift = randint(1,26)
