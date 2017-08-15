@@ -91,7 +91,7 @@ def Cipher_ARC4(string):
 	return [Encoding_Base64(msg)[0], key]
 
 def Cipher_Caesar(plaintext):
-	shift = randint(1,26)
+	shift = randint(1,25)
 	alphabet = string.ascii_lowercase
 	shifted_alphabet = alphabet[shift:] + alphabet[:shift]
 	table = string.maketrans(alphabet, shifted_alphabet)
